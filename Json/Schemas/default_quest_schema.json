@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "label": "Quest",
+  "fields": [
+	{
+	  "name": "id",
+	  "type": "string",
+	  "label": "Quest ID"
+	},
+	{
+	  "name": "title",
+	  "type": "string",
+	  "label": "Title"
+	},
+	{
+	  "name": "description",
+	  "type": "string",
+	  "label": "Description",
+	  "multiline": true
+	},
+	{
+	  "name": "characters",
+	  "type": "string",
+	  "label": "Main Characters"
+	},
+	{
+	  "name": "steps",
+	  "type": "array",
+	  "label": "Steps",
+	  "item": {
+		"type": "object",
+		"fields": [
+		  {
+			"name": "id",
+			"type": "string",
+			"label": "Step ID"
+		  },
+		  {
+			"name": "description",
+			"type": "string",
+			"label": "Step Description",
+			"multiline": true
+		  },
+		  {
+			"name": "objectives",
+			"type": "array",
+			"label": "Objectives",
+			"item": {
+			  "type": "object",
+			  "fields": [
+				{ "name": "id", "type": "string", "label": "Objective ID" },
+				{ "name": "title", "type": "string", "label": "Title" },
+				{ "name": "characters", "type": "array", "label": "Characters", "item": { "type": "string" } },
+				{ "name": "description", "type": "string", "label": "Description", "multiline": true },
+				{ "name": "goal", "type": "string", "label": "Goal" },
+				{ "name": "results", "type": "array", "label": "Results", "item": { "type": "string" } },
+				{ "name": "mandatory", "type": "bool", "label": "Mandatory" }
+			  ]
+			}
+		  }
+		]
+	  }
+	}
+  ]
+}
