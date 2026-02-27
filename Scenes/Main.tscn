@@ -1,5 +1,8 @@
 [gd_scene format=3 uid="uid://da7asqfijfsoj"]
 
+[ext_resource type="Script" uid="uid://rn3v5c7s8tb" path="res://Scripts/main.gd" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://c8evbilseqbno" path="res://Scenes/LandingPage.tscn" id="2_idj7w"]
+
 [node name="Main" type="Control" unique_id=1076087253]
 layout_mode = 3
 anchors_preset = 15
@@ -7,3 +10,34 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_r150o")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=621451295]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="Control" type="Control" parent="MarginContainer" unique_id=126476004]
+layout_mode = 2
+
+[node name="LandingPage" parent="MarginContainer/Control" unique_id=2049900438 instance=ExtResource("2_idj7w")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 40.0
+offset_bottom = 40.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="OpenSchemaDialog" type="FileDialog" parent="." unique_id=691405340]
+oversampling_override = 1.0
+position = Vector2i(0, 36)
+
+[node name="SaveJsonDialog" type="FileDialog" parent="." unique_id=303321240]
+oversampling_override = 1.0
+position = Vector2i(0, 36)
+
+[node name="LoadJsonDialog" type="FileDialog" parent="." unique_id=897659064]
+oversampling_override = 1.0
+position = Vector2i(0, 36)

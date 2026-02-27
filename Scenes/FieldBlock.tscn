@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bsrl20oqurq15"]
+
+[node name="FieldBlock" type="Control" unique_id=865085833]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=28354037]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=802390787]
+layout_mode = 2
+text = "InputLabel"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1825260183]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="VBoxContainer/HBoxContainer" unique_id=599291592]
+custom_minimum_size = Vector2(300, 20)
+layout_mode = 2
+placeholder_text = "Type here"
