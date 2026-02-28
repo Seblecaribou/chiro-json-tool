@@ -17,11 +17,7 @@ offset_bottom = 40.0
 layout_mode = 2
 text = "InputLabel"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1825260183]
-custom_minimum_size = Vector2(100, 50)
-layout_mode = 2
-
-[node name="TextEdit" type="TextEdit" parent="VBoxContainer/HBoxContainer" unique_id=599291592]
+[node name="TextEdit" type="TextEdit" parent="VBoxContainer" unique_id=599291592]
 custom_minimum_size = Vector2(300, 20)
 layout_mode = 2
 placeholder_text = "Type here"

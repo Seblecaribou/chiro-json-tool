@@ -1,0 +1,5 @@
+{
+	"dialogue_last_schema": "res://Json/Schemas/dialogue_default.json",
+	"object_last_schema": "res://Json/Schemas/object_default.json",
+	"quest_last_schema": "res://Json/Schemas/quest_default.json"
+}
