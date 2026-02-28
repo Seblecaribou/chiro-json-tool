@@ -18,6 +18,11 @@ func _ready():
 	_load_config()
 	_show_landing_page()
 
+	landing_page.category_selected.connect(_on_category_selected)
+	editor_page.export_requested.connect(_on_export_requested)
+	editor_page.back_requested.connect(_show_landing_page)
+
+	_show_landing_page()
 
 #region functions
 ##Configure the app
@@ -102,7 +107,6 @@ func _on_category_selected(category: String) -> void:
 	
 	editor_page.build_from_schema(current_schema)
 	_show_editor()
-	
 
 func _on_export_requested(data: Dictionary) -> void:
 	_save_json_to_disk(data)

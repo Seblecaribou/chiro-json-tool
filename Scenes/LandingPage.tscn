@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://c8evbilseqbno"]
 
+[ext_resource type="Script" uid="uid://cqlur52cxkl6q" path="res://Scripts/LandingPage.gd" id="1_olvdx"]
+
 [node name="LandingPage" type="Control" unique_id=2049900438]
 layout_mode = 3
 anchors_preset = 15
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_olvdx")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1347064069]
 layout_mode = 1
@@ -26,14 +29,14 @@ grow_vertical = 2
 layout_mode = 2
 text = "CHIRO DEV TOOL"
 
-[node name="Quests" type="Button" parent="VBoxContainer" unique_id=323752877]
+[node name="QuestButton" type="Button" parent="VBoxContainer" unique_id=323752877]
 layout_mode = 2
 text = "QUESTS"
 
-[node name="Dialogues" type="Button" parent="VBoxContainer" unique_id=1930790764]
+[node name="DialogueButton" type="Button" parent="VBoxContainer" unique_id=1930790764]
 layout_mode = 2
 text = "DIALOGUES"
 
-[node name="Items" type="Button" parent="VBoxContainer" unique_id=152370503]
+[node name="ItemButton" type="Button" parent="VBoxContainer" unique_id=152370503]
 layout_mode = 2
 text = "ITEMS"

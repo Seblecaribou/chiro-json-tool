@@ -14,9 +14,14 @@ grow_vertical = 2
 script = ExtResource("1_r150o")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=621451295]
-layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Control" type="Control" parent="MarginContainer" unique_id=126476004]
 layout_mode = 2
@@ -32,7 +37,12 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="EditorPage" parent="MarginContainer/Control" unique_id=783348700 instance=ExtResource("3_kln2b")]
+visible = false
 layout_mode = 1
+offset_left = -551.0
+offset_top = -308.0
+offset_right = -551.0
+offset_bottom = -308.0
 
 [node name="OpenSchemaDialog" type="FileDialog" parent="." unique_id=691405340]
 oversampling_override = 1.0
