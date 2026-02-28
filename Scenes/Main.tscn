@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://da7asqfijfsoj"]
 
-[ext_resource type="Script" uid="uid://rn3v5c7s8tb" path="res://Scripts/main.gd" id="1_r150o"]
+[ext_resource type="Script" uid="uid://rn3v5c7s8tb" path="res://Scripts/Main.gd" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://c8evbilseqbno" path="res://Scenes/LandingPage.tscn" id="2_idj7w"]
+[ext_resource type="PackedScene" uid="uid://c6k1fckwuv5fa" path="res://Scenes/EditorPage.tscn" id="3_kln2b"]
 
 [node name="Main" type="Control" unique_id=1076087253]
 layout_mode = 3
@@ -29,6 +30,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 grow_horizontal = 1
 grow_vertical = 1
+
+[node name="EditorPage" parent="MarginContainer/Control" unique_id=783348700 instance=ExtResource("3_kln2b")]
+layout_mode = 1
 
 [node name="OpenSchemaDialog" type="FileDialog" parent="." unique_id=691405340]
 oversampling_override = 1.0

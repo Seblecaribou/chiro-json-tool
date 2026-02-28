@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://c13ee78sppsh2"]
+
+[node name="ArrayBlock" type="VBoxContainer" unique_id=1187086059]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="." unique_id=1344763881]
+layout_mode = 2
+
+[node name="ItemContainer" type="VBoxContainer" parent="." unique_id=2123960011]
+layout_mode = 2
+
+[node name="AddButton" type="Button" parent="." unique_id=1568139756]
+layout_mode = 2
+text = "+"
