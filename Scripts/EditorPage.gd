@@ -5,7 +5,20 @@ signal export_requested(data: Dictionary)
 signal back_requested()
 @onready var form_root = $VBoxContainer/ScrollContainer/VBoxContainer
 @onready var title_label = $VBoxContainer/Header/Label
+@onready var back_button = $VBoxContainer/Header/BackButton
+@onready var export_button = $VBoxContainer/Header/ExportButton
+@onready var category_label = $VBoxContainer/Header/Label
 var current_schema : Dictionary = {}
+
+func _ready():
+	back_button.pressed.connect(func():
+		emit_signal("back_requested")
+	)
+
+	export_button.pressed.connect(func():
+		emit_signal("export_requested", current_schema)
+	)
+
 
 #region Functions
 func build_from_schema(schema: Dictionary) -> void:
