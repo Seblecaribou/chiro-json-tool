@@ -7,7 +7,6 @@ signal back_requested()
 @onready var back_button = $VBoxContainer/Header/BackButton
 @onready var category_label = $VBoxContainer/Header/Label
 @onready var load_button = $VBoxContainer/Header/LoadButton
-@onready var save_button = $VBoxContainer/Header/SaveButton
 @onready var export_button = $VBoxContainer/Header/ExportButton
 @onready var form_root = $VBoxContainer/ScrollContainer/VBoxContainer
 var current_schema : Dictionary = {}
@@ -36,36 +35,29 @@ func _extract_object(container: Control) -> Dictionary:
 			continue
 
 		var type = child.get_meta("json_type")
+		var child_name = child.get_meta("json_name") if child.has_meta("json_name") else null
+		var input = child.get_meta("json_input") if child.has_meta("json_input") else null
 
 		match type:
 			"string":
-				var child_name = child.get_meta("json_name")
-				var input = child.get_meta("json_input")
-				result[child_name] = input.text
-
+				if child_name != null and input != null:
+					result[child_name] = input.text
 			"number":
-				var child_name = child.get_meta("json_name")
-				var input = child.get_meta("json_input")
-				result[child_name] = input.value
-
+				if child_name != null and input != null:
+					result[child_name] = input.value
 			"bool":
-				var child_name = child.get_meta("json_name")
-				var input = child.get_meta("json_input")
-				result[child_name] = input.button_pressed
-
+				if child_name != null and input != null:
+					result[child_name] = input.pressed if input is Button else input.button_pressed
 			"array":
-				var child_name = child.get_meta("json_name")
-				result[child_name] = _extract_array(child)
-
+				if child_name != null:
+					result[child_name] = _extract_array(child)
 			"object":
-				var nested_name = child.get_meta("json_name")
 				var nested_data = _extract_object(child)
-
-				# If object has a name, assign it
-				if nested_name != null and nested_name != "":
-					result[nested_name] = nested_data
+				if child_name != null and child_name != "":
+					result[child_name] = nested_data
 				else:
 					result.merge(nested_data)
+
 	return result
 
 func _extract_array(wrapper: VBoxContainer) -> Array:
@@ -95,8 +87,10 @@ func _build_node(schema: Dictionary, parent: Control) -> void:
 func _build_object(schema: Dictionary, parent: Control) -> void:
 	var container : VBoxContainer = VBoxContainer.new()
 	parent.add_child(container)
+
 	container.set_meta("json_type", "object")
 	container.set_meta("json_schema", schema)
+	container.set_meta("json_name", schema.get("name", ""))
 
 	for field in schema.get("fields", []):
 		_build_node(field, container)
@@ -107,6 +101,7 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 
 	wrapper.set_meta("json_type", "array")
 	wrapper.set_meta("json_schema", schema)
+	wrapper.set_meta("json_name", schema.get("name", ""))
 
 	var label : Label = Label.new()
 	label.text = schema.get("label", schema.get("name", "Array"))
@@ -114,7 +109,6 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 
 	var items_container : VBoxContainer = VBoxContainer.new()
 	wrapper.add_child(items_container)
-
 	wrapper.set_meta("json_items_container", items_container)
 
 	var add_button : Button = Button.new()
@@ -127,11 +121,14 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 
 func _add_array_item(array_wrapper: VBoxContainer):
 	var schema : Dictionary = array_wrapper.get_meta("json_schema")
-	var item_schema : Dictionary= schema.get("item")
+	var item_schema : Dictionary = schema.get("item")
 	var items_container = array_wrapper.get_meta("json_items_container")
 
 	var item_container := VBoxContainer.new()
 	items_container.add_child(item_container)
+
+	item_container.set_meta("json_type", "object")
+	item_container.set_meta("json_name", item_schema.get("name", ""))
 
 	_build_node(item_schema, item_container)
  

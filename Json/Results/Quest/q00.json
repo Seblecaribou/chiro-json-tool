@@ -1,0 +1,31 @@
+{
+	"characters": "char",
+	"description": "description of qsuest",
+	"id": "q00",
+	"steps": [
+		{
+			"description": "step descrtiption test",
+			"id": "ste001",
+			"objectives": [
+				{
+					"characters": [
+						{
+
+						}
+					],
+					"description": "this is the obj description",
+					"goal": "goal_test",
+					"id": "obj01",
+					"mandatory": "CheckBox::[signal]pressed",
+					"results": [
+						{
+
+						}
+					],
+					"title": "objective title"
+				}
+			]
+		}
+	],
+	"title": "title quest"
+}

@@ -34,11 +34,6 @@ layout_mode = 2
 layout_mode = 2
 text = "Load File"
 
-[node name="SaveButton" type="Button" parent="VBoxContainer/Header" unique_id=1324921233]
-layout_mode = 2
-text = "Save File
-"
-
 [node name="ExportButton" type="Button" parent="VBoxContainer/Header" unique_id=2141135400]
 layout_mode = 2
 text = "Export"
