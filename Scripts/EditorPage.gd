@@ -2,22 +2,20 @@ class_name EditorPage
 extends Control
 
 signal export_requested(data: Dictionary)
+signal load_requested(schema_path: Dictionary)
 signal back_requested()
-@onready var form_root = $VBoxContainer/ScrollContainer/VBoxContainer
-@onready var title_label = $VBoxContainer/Header/Label
 @onready var back_button = $VBoxContainer/Header/BackButton
-@onready var export_button = $VBoxContainer/Header/ExportButton
 @onready var category_label = $VBoxContainer/Header/Label
+@onready var load_button = $VBoxContainer/Header/LoadButton
+@onready var save_button = $VBoxContainer/Header/SaveButton
+@onready var export_button = $VBoxContainer/Header/ExportButton
+@onready var form_root = $VBoxContainer/ScrollContainer/VBoxContainer
 var current_schema : Dictionary = {}
 
 func _ready():
-	back_button.pressed.connect(func():
-		emit_signal("back_requested")
-	)
-
-	export_button.pressed.connect(func():
-		emit_signal("export_requested", current_schema)
-	)
+	back_button.pressed.connect(func(): emit_signal("back_requested"))
+	load_button.pressed.connect(_on_load_pressed)
+	export_button.pressed.connect(_on_export_button_pressed)
 
 
 #region Functions
@@ -196,6 +194,11 @@ func _build_number(schema: Dictionary, parent: Control) -> void:
 #endregion Functions
 
 #region Signal callback functions
+func _on_load_pressed():
+	#TODO : make a path picker
+	var schema_path = "res://Json/Schemas/quest_schema.json"
+	emit_signal("load_requested", schema_path)
+
 func _on_export_button_pressed():
 	var data := _extract_object(form_root)
 	export_requested.emit(data)

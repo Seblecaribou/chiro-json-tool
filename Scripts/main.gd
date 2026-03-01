@@ -19,8 +19,9 @@ func _ready():
 	_show_landing_page()
 
 	landing_page.category_selected.connect(_on_category_selected)
-	editor_page.export_requested.connect(_on_export_requested)
 	editor_page.back_requested.connect(_show_landing_page)
+	editor_page.load_requested.connect(_on_schema_load_requested)
+	editor_page.export_requested.connect(_on_export_requested)
 
 	_show_landing_page()
 
@@ -107,6 +108,10 @@ func _on_category_selected(category: String) -> void:
 	
 	editor_page.build_from_schema(current_schema)
 	_show_editor()
+
+func _on_schema_load_requested(schema_path: String):
+	_load_schema(schema_path)
+	editor_page.build_from_schema(current_schema)
 
 func _on_export_requested(data: Dictionary) -> void:
 	_save_json_to_disk(data)
