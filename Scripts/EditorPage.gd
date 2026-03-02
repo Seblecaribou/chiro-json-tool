@@ -47,7 +47,7 @@ func _extract_object(container: Control) -> Dictionary:
 					result[child_name] = input.value
 			"bool":
 				if child_name != null and input != null:
-					result[child_name] = input.pressed if input is Button else input.button_pressed
+					result[child_name] = input.button_pressed if input is Button else input.button_pressed
 			"array":
 				if child_name != null:
 					result[child_name] = _extract_array(child)

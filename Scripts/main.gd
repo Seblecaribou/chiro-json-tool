@@ -11,8 +11,8 @@ var current_category : String = ""
 var current_schema : Dictionary = {}
 var current_schema_path : String = ""
 
-@onready var landing_page = $MarginContainer/Control/LandingPage
-@onready var editor_page = $MarginContainer/Control/EditorPage
+@onready var landing_page = $CanvasLayer/MarginContainer/Control/LandingPage
+@onready var editor_page = $CanvasLayer/MarginContainer/Control/EditorPage
 
 func _ready():
 	_load_config()
