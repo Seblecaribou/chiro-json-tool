@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "fields": [
+	{
+	  "type": "array",
+	  "name": "dialogues",
+	  "item": {
+		"type": "object",
+		"fields": [
+		  { "type": "string", "name": "quest_id", "label": "Quest ID" },
+		  {
+			"type": "array",
+			"name": "steps",
+			"item": {
+			  "type": "object",
+			  "fields": [
+				{ "type": "string", "name": "step_id", "label": "Step ID" },
+				{
+				  "type": "array",
+				  "name": "objectives",
+				  "item": {
+					"type": "object",
+					"fields": [
+					  { "type": "string", "name": "objective_id", "label": "Objective ID" },
+					  { "type": "string", "name": "dialogue_button_label", "label": "Button Label" },
+					  {
+						"type": "array",
+						"name": "content",
+						"item": {
+						  "type": "object",
+						  "fields": [
+							{ "type": "string", "name": "character_id", "label": "Character ID" },
+							{
+							  "type": "array",
+							  "name": "dialogue_lines",
+							  "item": {
+								"type": "string",
+								"multiline": false
+							  }
+							}
+						  ]
+						}
+					  }
+					]
+				  }
+				}
+			  ]
+			}
+		  }
+		]
+	  }
+	}
+  ]
+}

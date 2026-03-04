@@ -35,31 +35,31 @@ func _extract_object(container: Control) -> Dictionary:
 			continue
 
 		var type = child.get_meta("json_type")
-		var name = child.get_meta("json_name") if child.has_meta("json_name") else null
+		var child_name = child.get_meta("json_name") if child.has_meta("json_name") else null
 		var input = child.get_meta("json_input") if child.has_meta("json_input") else null
 
 		match type:
 			"string":
-				if name != null:
-					result[name] = input.text
+				if child_name != null:
+					result[child_name] = input.text
 
 			"number":
-				if name != null:
-					result[name] = input.value
+				if child_name != null:
+					result[child_name] = input.value
 
 			"bool":
-				if name != null:
-					result[name] = input.button_pressed
+				if child_name != null:
+					result[child_name] = input.button_pressed
 
 			"array":
-				if name != null:
-					result[name] = _extract_array(child)
+				if child_name != null:
+					result[child_name] = _extract_array(child)
 
 			"object":
 				var nested_data = _extract_object(child)
 
-				if name != null and name != "":
-					result[name] = nested_data
+				if child_name != null and child_name != "":
+					result[child_name] = nested_data
 				else:
 					# Root object only
 					for key in nested_data.keys():
@@ -69,10 +69,26 @@ func _extract_object(container: Control) -> Dictionary:
 func _extract_array(wrapper: VBoxContainer) -> Array:
 	var result := []
 	var items_container = wrapper.get_meta("json_items_container")
+	var schema : Dictionary = wrapper.get_meta("json_schema")
+	var item_schema : Dictionary = schema.get("item")
+	var item_type : String = item_schema.get("type")
 
 	for item in items_container.get_children():
-		var value = _extract_object(item)
-		result.append(value)
+		if item_type == "object":
+			result.append(_extract_object(item))
+		else:
+			# primitive item
+			if item.has_meta("json_input"):
+				var input = item.get_meta("json_input")
+				match item_type:
+					"string":
+						result.append(input.text)
+					"number":
+						result.append(input.value)
+					"bool":
+						result.append(input.button_pressed)
+					"enum":
+						result.append(input.get_item_text(input.selected))
 
 	return result
 
@@ -130,13 +146,15 @@ func _add_array_item(array_wrapper: VBoxContainer):
 	var item_schema : Dictionary = schema.get("item")
 	var items_container = array_wrapper.get_meta("json_items_container")
 
-	var item_container := VBoxContainer.new()
-	items_container.add_child(item_container)
-
-	item_container.set_meta("json_type", "object")
-	item_container.set_meta("json_name", item_schema.get("name", ""))
-
-	_build_node(item_schema, item_container)
+	match item_schema.get("type"):
+		"object":
+			var item_container := VBoxContainer.new()
+			items_container.add_child(item_container)
+			item_container.set_meta("json_type", "object")
+			_build_node(item_schema, item_container)
+		_:
+			# Primitive types (string, number, bool, enum)
+			_build_node(item_schema, items_container)
  
 
 func _build_string(schema: Dictionary, parent: Control) -> void:
