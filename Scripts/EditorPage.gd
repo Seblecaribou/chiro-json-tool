@@ -105,7 +105,8 @@ func _build_node(schema: Dictionary, parent: Control) -> void:
 			_build_bool(schema, parent)
 		"number":
 			_build_number(schema, parent)
-		
+
+##Parse schema.json and generate inputs fields for objects
 func _build_object(schema: Dictionary, parent: Control) -> void:
 	var container : VBoxContainer = VBoxContainer.new()
 	parent.add_child(container)
@@ -117,24 +118,37 @@ func _build_object(schema: Dictionary, parent: Control) -> void:
 	for field in schema.get("fields", []):
 		_build_node(field, container)
 			
+##Parse schema.json and generate inputs fields for arrays
 func _build_array(schema: Dictionary, parent: Control) -> void:
-	var wrapper: VBoxContainer = VBoxContainer.new()
-	parent.add_child(wrapper)
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	panel.add_theme_constant_override("margin_left", 20)
+	panel.add_theme_constant_override("margin_top", 20)
+	panel.add_theme_constant_override("margin_right", 20)
+	panel.add_theme_constant_override("margin_bottom", 20)
+
+	var wrapper := VBoxContainer.new()
+	panel.add_child(wrapper)
 
 	wrapper.set_meta("json_type", "array")
 	wrapper.set_meta("json_schema", schema)
 	wrapper.set_meta("json_name", schema.get("name", ""))
 
-	var label : Label = Label.new()
+	# Title
+	var label := Label.new()
 	label.text = schema.get("label", schema.get("name", "Array"))
+	label.add_theme_font_size_override("font_size", 16)
 	wrapper.add_child(label)
 
-	var items_container : VBoxContainer = VBoxContainer.new()
+	# Items container
+	var items_container := VBoxContainer.new()
 	wrapper.add_child(items_container)
 	wrapper.set_meta("json_items_container", items_container)
 
-	var add_button : Button = Button.new()
-	add_button.text = "Add"
+	# Add button
+	var add_button := Button.new()
+	add_button.text = "+ Add"
 	wrapper.add_child(add_button)
 
 	add_button.pressed.connect(func():
