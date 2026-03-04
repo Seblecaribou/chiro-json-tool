@@ -18,6 +18,7 @@ script = ExtResource("1_r150o")
 follow_viewport_enabled = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer" unique_id=843436517]
+visible = false
 offset_right = 1898.0
 offset_bottom = 1072.0
 texture = ExtResource("2_rgh2o")

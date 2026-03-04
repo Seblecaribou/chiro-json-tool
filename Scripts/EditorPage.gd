@@ -35,29 +35,35 @@ func _extract_object(container: Control) -> Dictionary:
 			continue
 
 		var type = child.get_meta("json_type")
-		var child_name = child.get_meta("json_name") if child.has_meta("json_name") else null
+		var name = child.get_meta("json_name") if child.has_meta("json_name") else null
 		var input = child.get_meta("json_input") if child.has_meta("json_input") else null
 
 		match type:
 			"string":
-				if child_name != null and input != null:
-					result[child_name] = input.text
+				if name != null:
+					result[name] = input.text
+
 			"number":
-				if child_name != null and input != null:
-					result[child_name] = input.value
+				if name != null:
+					result[name] = input.value
+
 			"bool":
-				if child_name != null and input != null:
-					result[child_name] = input.button_pressed if input is Button else input.button_pressed
+				if name != null:
+					result[name] = input.button_pressed
+
 			"array":
-				if child_name != null:
-					result[child_name] = _extract_array(child)
+				if name != null:
+					result[name] = _extract_array(child)
+
 			"object":
 				var nested_data = _extract_object(child)
-				if child_name != null and child_name != "":
-					result[child_name] = nested_data
-				else:
-					result.merge(nested_data)
 
+				if name != null and name != "":
+					result[name] = nested_data
+				else:
+					# Root object only
+					for key in nested_data.keys():
+						result[key] = nested_data[key]
 	return result
 
 func _extract_array(wrapper: VBoxContainer) -> Array:
