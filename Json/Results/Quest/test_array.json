@@ -1,0 +1,29 @@
+{
+	"characters": "",
+	"description": "",
+	"id": "test_array",
+	"steps": [
+		{
+			"description": "",
+			"id": "step",
+			"objectives": [
+				{
+					"characters": [
+						"character1",
+						"character2"
+					],
+					"description": "",
+					"goal": "goal",
+					"id": "obj01",
+					"mandatory": true,
+					"results": [
+						"result1",
+						"result2"
+					],
+					"title": ""
+				}
+			]
+		}
+	],
+	"title": ""
+}

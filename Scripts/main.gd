@@ -11,13 +11,19 @@ var current_category : String = ""
 var current_schema : Dictionary = {}
 var current_schema_path : String = ""
 
-@onready var landing_page = $MarginContainer/Control/LandingPage
-@onready var editor_page = $MarginContainer/Control/EditorPage
+@onready var landing_page = $CanvasLayer/MarginContainer/Control/LandingPage
+@onready var editor_page = $CanvasLayer/MarginContainer/Control/EditorPage
 
 func _ready():
 	_load_config()
 	_show_landing_page()
 
+	landing_page.category_selected.connect(_on_category_selected)
+	editor_page.back_requested.connect(_show_landing_page)
+	editor_page.load_requested.connect(_on_schema_load_requested)
+	editor_page.export_requested.connect(_on_export_requested)
+
+	_show_landing_page()
 
 #region functions
 ##Configure the app
@@ -102,7 +108,10 @@ func _on_category_selected(category: String) -> void:
 	
 	editor_page.build_from_schema(current_schema)
 	_show_editor()
-	
+
+func _on_schema_load_requested(schema_path: String):
+	_load_schema(schema_path)
+	editor_page.build_from_schema(current_schema)
 
 func _on_export_requested(data: Dictionary) -> void:
 	_save_json_to_disk(data)

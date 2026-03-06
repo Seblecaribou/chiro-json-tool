@@ -1,0 +1,263 @@
+class_name EditorPage
+extends Control
+
+signal export_requested(data: Dictionary)
+signal load_requested(schema_path: Dictionary)
+signal back_requested()
+@onready var back_button = $VBoxContainer/Header/BackButton
+@onready var category_label = $VBoxContainer/Header/Label
+@onready var load_button = $VBoxContainer/Header/LoadButton
+@onready var export_button = $VBoxContainer/Header/ExportButton
+@onready var form_root = $VBoxContainer/ScrollContainer/VBoxContainer
+var current_schema : Dictionary = {}
+
+func _ready():
+	back_button.pressed.connect(func(): emit_signal("back_requested"))
+	load_button.pressed.connect(_on_load_pressed)
+	export_button.pressed.connect(_on_export_button_pressed)
+
+
+#region Functions
+func build_from_schema(schema: Dictionary) -> void:
+	current_schema = schema
+	_clear_form()
+	_build_node(schema, form_root)
+	
+func _clear_form():
+	for child in form_root.get_children():
+		child.queue_free()
+
+func _extract_object(container: Control) -> Dictionary:
+	var result := {}
+
+	for child in container.get_children():
+		if not child.has_meta("json_type"):
+			continue
+
+		var type = child.get_meta("json_type")
+		var child_name = child.get_meta("json_name") if child.has_meta("json_name") else null
+		var input = child.get_meta("json_input") if child.has_meta("json_input") else null
+
+		match type:
+			"string":
+				if child_name != null:
+					result[child_name] = input.text
+
+			"number":
+				if child_name != null:
+					result[child_name] = input.value
+
+			"bool":
+				if child_name != null:
+					result[child_name] = input.button_pressed
+
+			"array":
+				if child_name != null:
+					result[child_name] = _extract_array(child)
+
+			"object":
+				var nested_data = _extract_object(child)
+
+				if child_name != null and child_name != "":
+					result[child_name] = nested_data
+				else:
+					# Root object only
+					for key in nested_data.keys():
+						result[key] = nested_data[key]
+	return result
+
+func _extract_array(wrapper: VBoxContainer) -> Array:
+	var result := []
+	var items_container = wrapper.get_meta("json_items_container")
+	var schema : Dictionary = wrapper.get_meta("json_schema")
+	var item_schema : Dictionary = schema.get("item")
+	var item_type : String = item_schema.get("type")
+
+	for item in items_container.get_children():
+		if item_type == "object":
+			result.append(_extract_object(item))
+		else:
+			# primitive item
+			if item.has_meta("json_input"):
+				var input = item.get_meta("json_input")
+				match item_type:
+					"string":
+						result.append(input.text)
+					"number":
+						result.append(input.value)
+					"bool":
+						result.append(input.button_pressed)
+					"enum":
+						result.append(input.get_item_text(input.selected))
+
+	return result
+
+#region Schema Parser
+func _build_node(schema: Dictionary, parent: Control) -> void:
+	match schema.get("type"):
+		"object":
+			_build_object(schema, parent)
+		"array":
+			_build_array(schema, parent)
+		"string":
+			_build_string(schema, parent)
+		"bool":
+			_build_bool(schema, parent)
+		"number":
+			_build_number(schema, parent)
+
+##Parse schema.json and generate inputs fields for objects
+func _build_object(schema: Dictionary, parent: Control) -> void:
+	var container : VBoxContainer = VBoxContainer.new()
+	parent.add_child(container)
+
+	container.set_meta("json_type", "object")
+	container.set_meta("json_schema", schema)
+	container.set_meta("json_name", schema.get("name", ""))
+
+	for field in schema.get("fields", []):
+		_build_node(field, container)
+			
+##Parse schema.json and generate inputs fields for arrays
+func _build_array(schema: Dictionary, parent: Control) -> void:
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	panel.add_theme_constant_override("margin_left", 20)
+	panel.add_theme_constant_override("margin_top", 20)
+	panel.add_theme_constant_override("margin_right", 20)
+	panel.add_theme_constant_override("margin_bottom", 20)
+
+	var wrapper := VBoxContainer.new()
+	panel.add_child(wrapper)
+
+	wrapper.set_meta("json_type", "array")
+	wrapper.set_meta("json_schema", schema)
+	wrapper.set_meta("json_name", schema.get("name", ""))
+
+	# Title
+	var label := Label.new()
+	label.text = schema.get("label", schema.get("name", "Array"))
+	label.add_theme_font_size_override("font_size", 16)
+	wrapper.add_child(label)
+
+	# Items container
+	var items_container := VBoxContainer.new()
+	wrapper.add_child(items_container)
+	wrapper.set_meta("json_items_container", items_container)
+
+	# Add button
+	var add_button := Button.new()
+	add_button.text = "+ Add"
+	wrapper.add_child(add_button)
+
+	add_button.pressed.connect(func():
+		_add_array_item(wrapper)
+	)
+
+func _add_array_item(array_wrapper: VBoxContainer):
+	var schema : Dictionary = array_wrapper.get_meta("json_schema")
+	var item_schema : Dictionary = schema.get("item")
+	var items_container = array_wrapper.get_meta("json_items_container")
+
+	# Outer container for one array entry
+	var item_panel := PanelContainer.new()
+	items_container.add_child(item_panel)
+
+	var item_root := VBoxContainer.new()
+	item_panel.add_child(item_root)
+
+	# Top bar with remove button
+	var top_bar := HBoxContainer.new()
+	item_root.add_child(top_bar)
+
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_bar.add_child(spacer)
+
+	var remove_button := Button.new()
+	remove_button.text = "Remove"
+	top_bar.add_child(remove_button)
+
+	remove_button.pressed.connect(func():
+		item_panel.queue_free()
+	)
+
+	# Actual content
+	match item_schema.get("type"):
+		"object":
+			item_root.set_meta("json_type", "object")
+			_build_node(item_schema, item_root)
+		_:
+			_build_node(item_schema, item_root) 
+
+func _build_string(schema: Dictionary, parent: Control) -> void:
+	var container := VBoxContainer.new()
+	parent.add_child(container)
+
+	container.set_meta("json_type", "string")
+	container.set_meta("json_name", schema.get("name"))
+
+	var label := Label.new()
+	label.text = schema.get("label", schema.get("name", "String"))
+	container.add_child(label)
+
+	var input
+
+	if schema.get("multiline", false):
+		input = TextEdit.new()
+		input.custom_minimum_size.y = 100
+	else:
+		input = LineEdit.new()
+
+	container.add_child(input)
+	container.set_meta("json_input", input)
+	
+func _build_bool(schema: Dictionary, parent: Control) -> void:
+	var container := HBoxContainer.new()
+	parent.add_child(container)
+
+	container.set_meta("json_type", "bool")
+	container.set_meta("json_name", schema.get("name"))
+
+	var checkbox := CheckBox.new()
+	checkbox.text = schema.get("label", schema.get("name", "Bool"))
+	container.add_child(checkbox)
+
+	container.set_meta("json_input", checkbox)
+	
+func _build_number(schema: Dictionary, parent: Control) -> void:
+	var container := VBoxContainer.new()
+	parent.add_child(container)
+
+	container.set_meta("json_type", "number")
+	container.set_meta("json_name", schema.get("name"))
+
+	var label := Label.new()
+	label.text = schema.get("label", schema.get("name", "Number"))
+	container.add_child(label)
+
+	var spin := SpinBox.new()
+	spin.step = 1
+	spin.min_value = -999999
+	spin.max_value = 999999
+
+	container.add_child(spin)
+	container.set_meta("json_input", spin)
+#endregion Schema Parser
+
+#endregion Functions
+
+#region Signal callback functions
+func _on_load_pressed():
+	#TODO : make a path picker
+	var schema_path = "res://Json/Schemas/quest_schema.json"
+	emit_signal("load_requested", schema_path)
+
+func _on_export_button_pressed():
+	var data := _extract_object(form_root)
+	export_requested.emit(data)
+
+func _on_back_button_pressed():
+	back_requested.emit()
+#endregion

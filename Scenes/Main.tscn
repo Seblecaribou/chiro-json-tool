@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://da7asqfijfsoj"]
 
-[ext_resource type="Script" uid="uid://rn3v5c7s8tb" path="res://Scripts/Main.gd" id="1_r150o"]
+[ext_resource type="Script" uid="uid://rn3v5c7s8tb" path="res://Scripts/main.gd" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://c8evbilseqbno" path="res://Scenes/LandingPage.tscn" id="2_idj7w"]
+[ext_resource type="Texture2D" uid="uid://d3s6kdc423nds" path="res://Images/UI/Observables/item elem.png" id="2_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://c6k1fckwuv5fa" path="res://Scenes/EditorPage.tscn" id="3_kln2b"]
 
 [node name="Main" type="Control" unique_id=1076087253]
@@ -13,15 +14,32 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_r150o")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=621451295]
-layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=429347328]
+follow_viewport_enabled = true
 
-[node name="Control" type="Control" parent="MarginContainer" unique_id=126476004]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer" unique_id=843436517]
+visible = false
+offset_right = 1898.0
+offset_bottom = 1072.0
+texture = ExtResource("2_rgh2o")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=621451295]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="CanvasLayer/MarginContainer" unique_id=126476004]
 layout_mode = 2
 
-[node name="LandingPage" parent="MarginContainer/Control" unique_id=2049900438 instance=ExtResource("2_idj7w")]
+[node name="LandingPage" parent="CanvasLayer/MarginContainer/Control" unique_id=2049900438 instance=ExtResource("2_idj7w")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -31,8 +49,13 @@ offset_bottom = 40.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="EditorPage" parent="MarginContainer/Control" unique_id=783348700 instance=ExtResource("3_kln2b")]
+[node name="EditorPage" parent="CanvasLayer/MarginContainer/Control" unique_id=783348700 instance=ExtResource("3_kln2b")]
+visible = false
 layout_mode = 1
+offset_left = -551.0
+offset_top = -308.0
+offset_right = -551.0
+offset_bottom = -308.0
 
 [node name="OpenSchemaDialog" type="FileDialog" parent="." unique_id=691405340]
 oversampling_override = 1.0
