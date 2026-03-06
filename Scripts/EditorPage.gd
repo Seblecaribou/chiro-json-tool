@@ -120,7 +120,7 @@ func _build_object(schema: Dictionary, parent: Control) -> void:
 			
 ##Parse schema.json and generate inputs fields for arrays
 func _build_array(schema: Dictionary, parent: Control) -> void:
-	var panel := PanelContainer.new()
+	var panel := MarginContainer.new()
 	parent.add_child(panel)
 
 	panel.add_theme_constant_override("margin_left", 20)
