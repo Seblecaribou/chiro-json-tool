@@ -160,16 +160,36 @@ func _add_array_item(array_wrapper: VBoxContainer):
 	var item_schema : Dictionary = schema.get("item")
 	var items_container = array_wrapper.get_meta("json_items_container")
 
+	# Outer container for one array entry
+	var item_panel := PanelContainer.new()
+	items_container.add_child(item_panel)
+
+	var item_root := VBoxContainer.new()
+	item_panel.add_child(item_root)
+
+	# Top bar with remove button
+	var top_bar := HBoxContainer.new()
+	item_root.add_child(top_bar)
+
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_bar.add_child(spacer)
+
+	var remove_button := Button.new()
+	remove_button.text = "Remove"
+	top_bar.add_child(remove_button)
+
+	remove_button.pressed.connect(func():
+		item_panel.queue_free()
+	)
+
+	# Actual content
 	match item_schema.get("type"):
 		"object":
-			var item_container := VBoxContainer.new()
-			items_container.add_child(item_container)
-			item_container.set_meta("json_type", "object")
-			_build_node(item_schema, item_container)
+			item_root.set_meta("json_type", "object")
+			_build_node(item_schema, item_root)
 		_:
-			# Primitive types (string, number, bool, enum)
-			_build_node(item_schema, items_container)
- 
+			_build_node(item_schema, item_root) 
 
 func _build_string(schema: Dictionary, parent: Control) -> void:
 	var container := VBoxContainer.new()
