@@ -66,7 +66,7 @@ func _extract_object(container: Control) -> Dictionary:
 						result[key] = nested_data[key]
 	return result
 
-func _extract_array(wrapper: VBoxContainer) -> Array:
+func _extract_array(wrapper: Control) -> Array:
 	var result := []
 	var items_container = wrapper.get_meta("json_items_container")
 	var schema : Dictionary = wrapper.get_meta("json_schema")
@@ -123,6 +123,10 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 	var panel := MarginContainer.new()
 	parent.add_child(panel)
 
+	panel.set_meta("json_type", "array")
+	panel.set_meta("json_schema", schema)
+	panel.set_meta("json_name", schema.get("name", ""))
+
 	panel.add_theme_constant_override("margin_left", 20)
 	panel.add_theme_constant_override("margin_top", 20)
 	panel.add_theme_constant_override("margin_right", 20)
@@ -131,31 +135,25 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 	var wrapper := VBoxContainer.new()
 	panel.add_child(wrapper)
 
-	wrapper.set_meta("json_type", "array")
-	wrapper.set_meta("json_schema", schema)
-	wrapper.set_meta("json_name", schema.get("name", ""))
-
-	# Title
 	var label := Label.new()
 	label.text = schema.get("label", schema.get("name", "Array"))
 	label.add_theme_font_size_override("font_size", 16)
 	wrapper.add_child(label)
 
-	# Items container
 	var items_container := VBoxContainer.new()
 	wrapper.add_child(items_container)
-	wrapper.set_meta("json_items_container", items_container)
 
-	# Add button
+	panel.set_meta("json_items_container", items_container)
+
 	var add_button := Button.new()
 	add_button.text = "+ Add"
 	wrapper.add_child(add_button)
 
 	add_button.pressed.connect(func():
-		_add_array_item(wrapper)
+		_add_array_item(panel)
 	)
 
-func _add_array_item(array_wrapper: VBoxContainer):
+func _add_array_item(array_wrapper: Container):
 	var schema : Dictionary = array_wrapper.get_meta("json_schema")
 	var item_schema : Dictionary = schema.get("item")
 	var items_container = array_wrapper.get_meta("json_items_container")
