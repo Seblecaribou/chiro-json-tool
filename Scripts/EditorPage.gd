@@ -77,9 +77,11 @@ func _extract_array(wrapper: Control) -> Array:
 		if item_type == "object":
 			result.append(_extract_object(item))
 		else:
-			# primitive item
-			if item.has_meta("json_input"):
-				var input = item.get_meta("json_input")
+			var input_node = _find_input_node(item)
+			
+			if input_node != null:
+				var input = input_node.get_meta("json_input")
+				
 				match item_type:
 					"string":
 						result.append(input.text)
@@ -153,10 +155,10 @@ func _build_array(schema: Dictionary, parent: Control) -> void:
 		_add_array_item(panel)
 	)
 
-func _add_array_item(array_wrapper: Container):
-	var schema : Dictionary = array_wrapper.get_meta("json_schema")
+func _add_array_item(array_pannel: Container):
+	var schema : Dictionary = array_pannel.get_meta("json_schema")
 	var item_schema : Dictionary = schema.get("item")
-	var items_container = array_wrapper.get_meta("json_items_container")
+	var items_container = array_pannel.get_meta("json_items_container")
 
 	# Outer container for one array entry
 	var item_panel := PanelContainer.new()
@@ -243,6 +245,16 @@ func _build_number(schema: Dictionary, parent: Control) -> void:
 	container.add_child(spin)
 	container.set_meta("json_input", spin)
 #endregion Schema Parser
+
+func _find_input_node(node: Node) -> Node:
+	if node.has_meta("json_input"):
+		return node
+	
+	for child in node.get_children():
+		var result = _find_input_node(child)
+		if result != null:
+			return result
+	return null
 
 #endregion Functions
 
